@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¿Tu Negocio Está Estancado? La Soluencia está Aquí</title>
+    <title>¿Tu Negocio Está Estancado? La Solución está Aquí</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -129,6 +129,7 @@
             border: 2px solid transparent;
             background: rgba(30, 41, 59, 0.8);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
         }
         .action-btn:hover {
             transform: translateY(-10px) scale(1.03);
@@ -143,6 +144,77 @@
         .btn-share { color: #3b82f6; }
         .btn-text { font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; }
         .btn-desc { font-size: 1rem; color: #94a3b8; }
+        /* === MODAL PARA REMITENTE === */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); z-index: 10001;
+            display: none; justify-content: center; align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border-radius: 20px; padding: 40px; max-width: 600px;
+            width: 100%; border: 1px solid rgba(96, 165, 250, 0.3);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 20px; right: 20px;
+            background: none; border: none; color: #94a3b8;
+            font-size: 1.8rem; cursor: pointer;
+        }
+        .modal-title {
+            font-size: 2.2rem; margin-bottom: 20px;
+            color: #60a5fa; text-align: center;
+        }
+        .form-group { margin-bottom: 25px; text-align: left; }
+        .form-label {
+            display: block; margin-bottom: 10px; font-weight: 600;
+            color: #cbd5e1; font-size: 1.1rem;
+        }
+        .form-input {
+            width: 100%; padding: 15px; border-radius: 10px;
+            border: 2px solid rgba(100, 116, 139, 0.5);
+            background: rgba(15, 23, 42, 0.7); color: #f1f5f9;
+            font-size: 1.1rem; transition: border 0.3s;
+        }
+        .form-input:focus {
+            outline: none; border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        .form-help {
+            display: block; margin-top: 8px; font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        .modal-btn {
+            display: block; width: 100%; padding: 18px;
+            border-radius: 12px; border: none;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            color: white; font-weight: 700; font-size: 1.2rem;
+            cursor: pointer; transition: all 0.3s; margin-top: 20px;
+        }
+        .modal-btn:hover {
+            transform: translateY(-3px); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+        .generated-link-container {
+            margin-top: 30px; display: none;
+        }
+        .link-box {
+            display: flex; margin-bottom: 20px;
+        }
+        .link-input {
+            flex: 1; padding: 15px; border-radius: 10px 0 0 10px;
+            border: 2px solid rgba(100, 116, 139, 0.5);
+            background: rgba(15, 23, 42, 0.7); color: #f1f5f9;
+            font-size: 1rem; border-right: none;
+        }
+        .copy-btn {
+            padding: 15px 25px; border-radius: 0 10px 10px 0;
+            border: none; background: #10b981; color: white;
+            font-weight: 600; cursor: pointer; transition: background 0.3s;
+        }
+        .copy-btn:hover { background: #0da271; }
+        .copy-btn.copied { background: #057a55; }
         /* === BOTONES SECUNDARIOS DE COMPARTIR === */
         .share-section { margin-top: 50px; padding-top: 40px; border-top: 1px solid rgba(100, 116, 139, 0.3); }
         .share-section h3 { font-size: 1.8rem; margin-bottom: 25px; color: #cbd5e1; }
@@ -183,6 +255,9 @@
             .action-btn { padding: 25px 20px; }
             .video-stage-container { padding: 20px; }
             #action-stage { padding: 40px 25px; }
+            .modal-content { padding: 30px 20px; }
+            .share-buttons { flex-direction: column; align-items: center; }
+            .share-btn { width: 100%; max-width: 300px; }
         }
     </style>
 </head>
@@ -223,6 +298,66 @@
             </div>
         </div>
 
+        <!-- MODAL PARA REMITENTE (oculto inicialmente) -->
+        <div class="modal-overlay" id="senderModal">
+            <div class="modal-content">
+                <button class="modal-close" id="modalClose">&times;</button>
+                <h2 class="modal-title">Crea Tu Enlace Personalizado</h2>
+                <p style="text-align:center; margin-bottom:30px; color:#cbd5e1; font-size:1.1rem;">
+                    Ingresa tu número de teléfono para generar un enlace único. Cuando lo compartas, las personas podrán responderte directamente.
+                </p>
+                
+                <div class="form-group">
+                    <label class="form-label" for="senderPhone">Tu número de WhatsApp (con código de país):</label>
+                    <input type="tel" id="senderPhone" class="form-input" 
+                           placeholder="Ejemplo: +521234567890 (México)" 
+                           pattern="^\+[1-9]\d{1,14}$" required>
+                    <span class="form-help">Asegúrate de incluir el código de país. Ejemplos: +521234567890 (México), +573001234567 (Colombia), +5491123456789 (Argentina)</span>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="senderName">Tu nombre (opcional):</label>
+                    <input type="text" id="senderName" class="form-input" 
+                           placeholder="Ejemplo: Carlos García">
+                    <span class="form-help">Aparecerá en los mensajes que recibas.</span>
+                </div>
+                
+                <button class="modal-btn" id="generateLinkBtn">
+                    <i class="fas fa-link"></i> Generar Mi Enlace Personalizado
+                </button>
+                
+                <!-- Sección del enlace generado (oculta inicialmente) -->
+                <div class="generated-link-container" id="generatedLinkContainer">
+                    <h3 style="color:#10b981; margin-bottom:15px; text-align:center;">
+                        <i class="fas fa-check-circle"></i> ¡Enlace Generado!
+                    </h3>
+                    <p style="text-align:center; margin-bottom:20px; color:#cbd5e1;">
+                        Copia y comparte este enlace personalizado. Cuando alguien lo abra, podrá responderte directamente por WhatsApp o SMS.
+                    </p>
+                    
+                    <div class="link-box">
+                        <input type="text" id="personalizedLink" class="link-input" readonly>
+                        <button class="copy-btn" id="copyLinkBtn">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                    
+                    <div class="share-buttons" style="margin-top:30px;">
+                        <a href="#" class="share-btn share-whatsapp" id="shareGeneratedWhatsApp">
+                            <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
+                        </a>
+                        <a href="#" class="share-btn share-sms" id="shareGeneratedSMS">
+                            <i class="fas fa-sms"></i> Compartir por SMS
+                        </a>
+                    </div>
+                    
+                    <p style="text-align:center; margin-top:30px; color:#94a3b8; font-size:0.9rem;">
+                        <i class="fas fa-info-circle"></i> Este enlace incluye tu número de teléfono de forma segura para que te respondan directamente.
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <!-- Sección de Acción (se revela después del video) -->
         <div id="action-stage">
             <h2 class="action-title">¡Perfecto! Ahora Toma el Control</h2>
@@ -243,11 +378,11 @@
                 </a>
 
                 <!-- Si ERES EL REMITENTE (tú compartes) -->
-                <a href="#" class="action-btn" id="sender-share-btn">
+                <div class="action-btn" id="sender-share-btn">
                     <div class="btn-icon btn-share"><i class="fas fa-user-friends"></i></div>
                     <div class="btn-text">Yo Quiero Compartir Esto</div>
                     <div class="btn-desc">Genera tu enlace personalizado para que otros te respondan directamente.</div>
-                </a>
+                </div>
             </div>
 
             <!-- Sección de Compartir Rápido -->
@@ -291,6 +426,7 @@
         // ================= DETECTAR ROL DEL USUARIO =================
         const urlParams = new URLSearchParams(window.location.search);
         const senderPhone = urlParams.get('sender');
+        const senderName = urlParams.get('name');
         const userIsReceiver = !!senderPhone; // Si hay 'sender' en la URL, es receptor
 
         // ================= INICIALIZAR VIDEO =================
@@ -347,24 +483,136 @@
 
             if (userIsReceiver) {
                 // USUARIO ES RECEPTOR (mostrar botones de respuesta)
-                const responseMessage = "OK ✅ - Acabo de ver el video completo de Aiviraldownline. Quiero acceder a la clase gratuita y toda la información, por favor.";
+                const responseMessage = `OK ✅ - Acabo de ver el video completo de Aiviraldownline. Quiero acceder a la clase gratuita y toda la información, por favor.${senderName ? ` (Enviado por ${senderName})` : ''}`;
+                
                 receiverWhatsappBtn.href = `https://wa.me/${senderPhone}?text=${encodeURIComponent(responseMessage)}`;
                 receiverSmsBtn.href = `sms:${senderPhone}?body=${encodeURIComponent(responseMessage)}`;
                 senderShareBtn.style.display = 'none'; // Ocultar opción de compartir
+                
+                // Personalizar mensaje para receptor
+                if (senderName) {
+                    document.querySelector('.problem-statement p').innerHTML += 
+                    ` <strong style="color:#60a5fa;">${senderName} pensó que esta solución podría ayudarte específicamente.</strong>`;
+                }
             } else {
                 // USUARIO ES REMITENTE (mostrar opción para compartir)
                 receiverWhatsappBtn.style.display = 'none';
                 receiverSmsBtn.style.display = 'none';
+                
+                // Configurar el botón "Yo quiero compartir esto"
                 senderShareBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    window.location.href = `remitente-setup.html?return=${encodeURIComponent(currentPageUrl)}`;
+                    openSenderModal();
                 });
             }
         }
 
+        // ================= MODAL PARA REMITENTE =================
+        function openSenderModal() {
+            const modal = document.getElementById('senderModal');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.style.opacity = '1';
+            }, 10);
+            
+            // Enfocar el campo de teléfono
+            document.getElementById('senderPhone').focus();
+        }
+
+        function closeSenderModal() {
+            const modal = document.getElementById('senderModal');
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        // ================= GENERAR ENLACE PERSONALIZADO =================
+        function generatePersonalizedLink() {
+            const phoneInput = document.getElementById('senderPhone');
+            const nameInput = document.getElementById('senderName');
+            
+            // Validar número de teléfono
+            const phoneRegex = /^\+[1-9]\d{1,14}$/;
+            if (!phoneRegex.test(phoneInput.value)) {
+                alert('❌ Por favor, ingresa un número de teléfono válido con código de país.\nEjemplo: +521234567890');
+                phoneInput.focus();
+                return;
+            }
+            
+            const phoneNumber = encodeURIComponent(phoneInput.value.trim());
+            const senderName = nameInput.value.trim() ? encodeURIComponent(nameInput.value.trim()) : '';
+            
+            // Crear enlace personalizado
+            let personalizedUrl = `${currentPageUrl}?sender=${phoneNumber}`;
+            if (senderName) {
+                personalizedUrl += `&name=${senderName}`;
+            }
+            
+            // Mostrar enlace generado
+            const linkContainer = document.getElementById('generatedLinkContainer');
+            const linkInput = document.getElementById('personalizedLink');
+            
+            linkInput.value = personalizedUrl;
+            linkContainer.style.display = 'block';
+            
+            // Desplazar hacia el enlace generado
+            linkContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            // Configurar botón de copiar
+            setupCopyButton();
+            
+            // Configurar botones de compartir el enlace generado
+            setupGeneratedLinkShareButtons(personalizedUrl, phoneInput.value, nameInput.value);
+            
+            // Guardar en localStorage para futuras visitas
+            localStorage.setItem('senderData', JSON.stringify({
+                phone: phoneInput.value,
+                name: nameInput.value
+            }));
+        }
+
+        function setupCopyButton() {
+            const copyBtn = document.getElementById('copyLinkBtn');
+            const linkInput = document.getElementById('personalizedLink');
+            
+            copyBtn.addEventListener('click', function() {
+                linkInput.select();
+                document.execCommand('copy');
+                
+                // Cambiar texto del botón temporalmente
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function setupGeneratedLinkShareButtons(personalizedUrl, phone, name) {
+            const shareText = `⚠️ ¿Tu negocio está estancado? ${name ? `Soy ${name} y ` : ''}Acabo de encontrar esta solución para generar tráfico y clientes ideales. Mírala tú también y luego respóndeme "OK" para que te comparta el acceso completo.`;
+            
+            // WhatsApp
+            document.getElementById('shareGeneratedWhatsApp').addEventListener('click', function(e) {
+                e.preventDefault();
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + personalizedUrl)}`;
+                window.open(whatsappUrl, '_blank');
+            });
+            
+            // SMS
+            document.getElementById('shareGeneratedSMS').addEventListener('click', function(e) {
+                e.preventDefault();
+                const smsUrl = `sms:?body=${encodeURIComponent(shareText + '\n\n' + personalizedUrl)}`;
+                window.location.href = smsUrl;
+            });
+        }
+
         // ================= CONFIGURAR BOTONES DE COMPARTIR RÁPIDO =================
         function setupQuickShareButtons() {
-            const shareTitle = "⚠️ Tu Negocio Está Estancado? Mira Esto";
+            const shareTitle = "⚠️ ¿Tu Negocio Está Estancado? Mira Esto";
             const shareText = `Acabo de ver este sistema que soluciona exactamente lo que necesitamos: tráfico, clientes ideales y automatización. Míralo TÚ también. Responde "OK" después del video para tu acceso gratuito.`;
 
             // WhatsApp
@@ -396,6 +644,37 @@
             });
         }
 
+        // ================= EVENT LISTENERS PARA EL MODAL =================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cerrar modal
+            document.getElementById('modalClose').addEventListener('click', closeSenderModal);
+            
+            // Cerrar modal haciendo clic fuera del contenido
+            document.getElementById('senderModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeSenderModal();
+                }
+            });
+            
+            // Generar enlace al hacer clic en el botón
+            document.getElementById('generateLinkBtn').addEventListener('click', generatePersonalizedLink);
+            
+            // También generar enlace al presionar Enter en el campo de teléfono
+            document.getElementById('senderPhone').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    generatePersonalizedLink();
+                }
+            });
+            
+            // Cargar datos guardados si existen
+            const savedData = localStorage.getItem('senderData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                document.getElementById('senderPhone').value = data.phone || '';
+                document.getElementById('senderName').value = data.name || '';
+            }
+        });
+
         // ================= BLOQUEAR ACCESO PREMATURO =================
         document.addEventListener('click', function(e) {
             if (!videoEnded && !e.target.closest('.video-stage-container')) {
@@ -405,15 +684,6 @@
                 setTimeout(() => {
                     document.getElementById('blocking-overlay').style.opacity = '1';
                 }, 10);
-            }
-        });
-
-        // ================= INICIALIZACIÓN =================
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mostrar mensaje personalizado según rol
-            if (userIsReceiver) {
-                document.querySelector('.problem-statement p').innerHTML += 
-                    ' <strong>Alguien pensó que esto podría ayudarte específicamente a ti.</strong>';
             }
         });
     </script>
