@@ -3,336 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aiviraldownline - Video Presentación</title>
+    <title>¿Tu Negocio Está Estancado? La Soluencia está Aquí</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --color-primary: #1a56db;
+            --color-danger: #e02424;
+            --color-warning: #f59e0b;
+            --color-success: #057a55;
+            --color-dark: #1f2937;
+            --color-light: #f3f4f6;
         }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
         body {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            color: #f1f5f9;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9; min-height: 100vh;
             overflow-x: hidden;
         }
-        
-        /* Contenedor principal */
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+        .page-wrapper {
+            max-width: 1200px; margin: 0 auto; padding: 20px;
+            display: flex; flex-direction: column; min-height: 100vh;
         }
-        
-        /* Encabezado */
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 0 20px;
-            max-width: 800px;
+        /* === HEADER CON URGENCIA === */
+        .urgency-bar {
+            background: linear-gradient(90deg, var(--color-danger), var(--color-warning));
+            color: white; text-align: center; padding: 12px;
+            font-weight: 700; font-size: 1.1rem;
+            border-radius: 8px; margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(224, 36, 36, 0.3);
+            animation: pulse 2s infinite;
         }
-        
-        .header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 15px;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.9; }
+        }
+        .main-header { text-align: center; margin-bottom: 40px; padding: 0 20px; }
+        .main-header h1 {
+            font-size: 3rem; margin-bottom: 20px; line-height: 1.1;
             background: linear-gradient(90deg, #60a5fa, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.2;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        
-        .header p {
-            font-size: 1.2rem;
-            color: #cbd5e1;
-            line-height: 1.6;
+        .problem-statement {
+            background-color: rgba(239, 68, 68, 0.15);
+            border-left: 5px solid var(--color-danger);
+            padding: 25px; border-radius: 10px;
+            margin-bottom: 30px; font-size: 1.3rem; line-height: 1.6;
         }
-        
-        /* Contenedor del video */
-        .video-stage {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto 50px;
-            position: relative;
+        /* === VIDEO STAGE - CENTRO DE ATENCIÓN === */
+        .video-stage-container {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 20px; padding: 30px;
+            margin: 30px auto; max-width: 900px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(100, 116, 139, 0.3);
         }
-        
+        .video-header { text-align: center; margin-bottom: 25px; }
+        .video-header h2 {
+            color: #60a5fa; font-size: 2rem;
+            margin-bottom: 10px;
+        }
         .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* Relación 16:9 */
-            height: 0;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            background-color: #000;
+            position: relative; padding-bottom: 56.25%;
+            height: 0; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
         }
-        
-        #player {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
+        #youtube-player {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; border: none;
         }
-        
-        /* Overlay que bloquea la página durante la reproducción */
-        .blocking-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(15, 23, 42, 0.95);
-            z-index: 9998;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-            opacity: 1;
-            transition: opacity 0.8s ease;
+        /* === OVERLAY BLOQUEADOR === */
+        #blocking-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(15, 23, 42, 0.98);
+            z-index: 10000; display: flex;
+            flex-direction: column; align-items: center;
+            justify-content: center; text-align: center;
+            padding: 30px; transition: opacity 0.5s ease;
         }
-        
-        .blocking-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .overlay-message {
-            max-width: 600px;
-            margin-top: 30px;
-            color: #e2e8f0;
-        }
-        
-        .overlay-message h3 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
+        .overlay-content { max-width: 600px; }
+        .overlay-icon { font-size: 4rem; color: #f59e0b; margin-bottom: 20px; }
+        .overlay-content h3 {
+            font-size: 2.2rem; margin-bottom: 20px;
             color: #60a5fa;
         }
-        
-        /* Sección de acciones (inicialmente oculta) */
-        .action-section {
-            max-width: 800px;
-            width: 100%;
-            text-align: center;
-            padding: 40px;
-            border-radius: 16px;
-            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(100, 116, 139, 0.2);
-            opacity: 0;
-            transform: translateY(30px);
+        .overlay-content p {
+            font-size: 1.3rem; color: #cbd5e1;
+            margin-bottom: 15px; line-height: 1.6;
+        }
+        /* === SECCIÓN DE ACCIÓN (OCULTA INICIALMENTE) === */
+        #action-stage {
+            max-width: 900px; width: 100%; margin: 40px auto;
+            text-align: center; padding: 50px 40px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            opacity: 0; transform: translateY(40px);
             transition: opacity 0.8s ease, transform 0.8s ease;
-            margin-top: 20px;
+            display: none; /* Oculto hasta que el video termine */
         }
-        
-        .action-section.visible {
-            opacity: 1;
-            transform: translateY(0);
+        #action-stage.visible {
+            opacity: 1; transform: translateY(0);
+            display: block;
         }
-        
-        .action-section h2 {
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            color: #f8fafc;
+        .action-title {
+            font-size: 2.5rem; margin-bottom: 15px;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        
-        .action-section p {
-            font-size: 1.2rem;
-            color: #cbd5e1;
-            margin-bottom: 30px;
-            line-height: 1.6;
+        .action-subtitle {
+            font-size: 1.4rem; color: #cbd5e1;
+            margin-bottom: 40px; max-width: 700px;
+            margin-left: auto; margin-right: auto;
         }
-        
-        /* Botones de acción */
+        /* === BOTONES DE ACCIÓN PRINCIPALES === */
         .action-buttons {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 25px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px; margin-bottom: 40px;
         }
-        
         .action-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px 32px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            min-width: 200px;
-            border: none;
-            cursor: pointer;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 30px 25px; border-radius: 16px;
+            text-decoration: none; transition: all 0.4s ease;
+            border: 2px solid transparent;
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
-        
-        .action-btn i {
-            margin-right: 12px;
-            font-size: 1.3rem;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            color: white;
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
-        }
-        
-        .btn-whatsapp {
-            background-color: #25D366;
-            color: white;
-        }
-        
-        .btn-sms {
-            background-color: #8b5cf6;
-            color: white;
-        }
-        
         .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
-            filter: brightness(1.1);
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(96, 165, 250, 0.5);
         }
-        
-        /* Instrucciones */
-        .instructions {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: rgba(30, 41, 59, 0.5);
-            border-radius: 10px;
-            font-size: 1rem;
-            color: #94a3b8;
+        .btn-icon {
+            font-size: 3.5rem; margin-bottom: 20px;
         }
-        
-        /* Pie de página */
+        .btn-whatsapp { color: #25D366; }
+        .btn-sms { color: #8b5cf6; }
+        .btn-share { color: #3b82f6; }
+        .btn-text { font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; }
+        .btn-desc { font-size: 1rem; color: #94a3b8; }
+        /* === BOTONES SECUNDARIOS DE COMPARTIR === */
+        .share-section { margin-top: 50px; padding-top: 40px; border-top: 1px solid rgba(100, 116, 139, 0.3); }
+        .share-section h3 { font-size: 1.8rem; margin-bottom: 25px; color: #cbd5e1; }
+        .share-buttons {
+            display: flex; justify-content: center; flex-wrap: wrap; gap: 15px;
+        }
+        .share-btn {
+            display: inline-flex; align-items: center;
+            padding: 15px 30px; border-radius: 50px;
+            text-decoration: none; font-weight: 600;
+            transition: all 0.3s ease; min-width: 180px;
+        }
+        .share-btn i { margin-right: 12px; font-size: 1.3rem; }
+        .share-whatsapp { background-color: #25D366; color: white; }
+        .share-facebook { background-color: #1877F2; color: white; }
+        .share-twitter { background-color: #1DA1F2; color: white; }
+        .share-sms { background-color: #8b5cf6; color: white; }
+        .share-btn:hover {
+            transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        /* === FOOTER === */
         footer {
-            text-align: center;
-            padding: 30px 20px;
-            color: #64748b;
-            font-size: 0.9rem;
+            text-align: center; padding: 40px 20px;
+            color: #64748b; margin-top: 60px;
             border-top: 1px solid rgba(100, 116, 139, 0.2);
-            margin-top: 40px;
         }
-        
-        /* Responsive */
+        .guarantee {
+            background: rgba(5, 122, 85, 0.15);
+            padding: 25px; border-radius: 12px;
+            max-width: 800px; margin: 0 auto 30px;
+            border-left: 5px solid var(--color-success);
+        }
+        /* === RESPONSIVE === */
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2.2rem;
-            }
-            
-            .header p {
-                font-size: 1.1rem;
-            }
-            
-            .action-section {
-                padding: 30px 20px;
-            }
-            
-            .action-btn {
-                min-width: 100%;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
+            .main-header h1 { font-size: 2.3rem; }
+            .problem-statement { font-size: 1.1rem; padding: 20px; }
+            .action-buttons { grid-template-columns: 1fr; }
+            .action-btn { padding: 25px 20px; }
+            .video-stage-container { padding: 20px; }
+            #action-stage { padding: 40px 25px; }
         }
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <!-- Encabezado -->
-        <div class="header">
-            <h1>Sistema Aiviraldownline: Lleva tu Negocio al Siguiente Nivel</h1>
-            <p>Descubre en este video el sistema de marketing con tecnología moderna diseñado para facilitarte la vida y multiplicar tus clientes.</p>
+    <div class="page-wrapper">
+        <!-- Barra de Urgencia -->
+        <div class="urgency-bar">
+            ⚠️ ATENCIÓN: Esta oportunidad es limitada. Mira el video COMPLETO para desbloquear tu acceso.
         </div>
-        
-        <!-- Etapa del video -->
-        <div class="video-stage">
+
+        <!-- Encabezado Principal -->
+        <header class="main-header">
+            <h1>Tu Negocio Está Estancado y en Peligro. Esto es lo que Necesitas.</h1>
+            <div class="problem-statement">
+                <p><strong>Necesitas tráfico, necesitas ser expuesto a personas que buscan lo que tienes.</strong> Para ello ocupas un sistema de marketing que te ayude a encontrar los clientes correctos para llevar tu negocio al siguiente nivel.</p>
+            </div>
+        </header>
+
+        <!-- Sección del Video -->
+        <div class="video-stage-container">
+            <div class="video-header">
+                <h2><i class="fas fa-play-circle"></i> Presentación Exclusiva: Aiviraldownline</h2>
+                <p>Mira este video de 5 minutos. Al terminarlo, se desbloqueará tu acceso inmediato.</p>
+            </div>
             <div class="video-wrapper">
-                <!-- El iframe se insertará aquí por JavaScript -->
-                <div id="player"></div>
+                <div id="youtube-player"></div>
             </div>
         </div>
-        
-        <!-- Overlay que bloquea la página durante la reproducción -->
-        <div class="blocking-overlay" id="blockingOverlay">
-            <div class="overlay-message">
-                <h3>Por favor, mira el video completo</h3>
-                <p>Para desbloquear las opciones de compartir y recibir tu invitación gratuita, es necesario que veas la presentación completa.</p>
-                <p>El video comenzará automáticamente en unos segundos...</p>
+
+        <!-- Overlay Bloqueador (se muestra al inicio) -->
+        <div id="blocking-overlay">
+            <div class="overlay-content">
+                <div class="overlay-icon"><i class="fas fa-lock"></i></div>
+                <h3>Acceso Bloqueado</h3>
+                <p>Para garantizar que obtengas el valor completo, <strong>debes ver la presentación íntegra</strong>.</p>
+                <p>Las opciones para compartir y tu invitación gratuita se activarán <strong>automáticamente</strong> cuando el video finalice.</p>
+                <p style="margin-top:30px; color:#f59e0b;"><i class="fas fa-hourglass-half"></i> El video comenzará en breve...</p>
             </div>
         </div>
-        
-        <!-- Sección de acciones (inicialmente oculta) -->
-        <div class="action-section" id="actionSection">
-            <h2>¡Excelente! Video Completo</h2>
-            <p>Ahora puedes compartir esta oportunidad con otros o responder "OK" para recibir tu invitación a la clase gratuita donde verás cómo implementar este sistema.</p>
-            
+
+        <!-- Sección de Acción (se revela después del video) -->
+        <div id="action-stage">
+            <h2 class="action-title">¡Perfecto! Ahora Toma el Control</h2>
+            <p class="action-subtitle">El video terminó. Ahora elige cómo quieres proceder:</p>
+
             <div class="action-buttons">
-                <a href="#" class="action-btn btn-primary" id="shareButton">
-                    <i class="fas fa-share-alt"></i> Compartir Oportunidad
+                <!-- Si ERES EL RECEPTOR (te compartieron esto) -->
+                <a href="#" class="action-btn" id="receiver-whatsapp-btn">
+                    <div class="btn-icon btn-whatsapp"><i class="fab fa-whatsapp"></i></div>
+                    <div class="btn-text">Responder "OK" por WhatsApp</div>
+                    <div class="btn-desc">Responde directamente a quien te envió esto para recibir TODO el acceso.</div>
                 </a>
-                
-                <a href="#" class="action-btn btn-whatsapp" id="whatsappButton">
-                    <i class="fab fa-whatsapp"></i> Responder "OK" por WhatsApp
+
+                <a href="#" class="action-btn" id="receiver-sms-btn">
+                    <div class="btn-icon btn-sms"><i class="fas fa-sms"></i></div>
+                    <div class="btn-text">Responder "OK" por Mensaje de Texto</div>
+                    <div class="btn-desc">Envía un SMS automático para obtener tu invitación a la clase.</div>
                 </a>
-                
-                <a href="#" class="action-btn btn-sms" id="smsButton">
-                    <i class="fas fa-sms"></i> Responder "OK" por SMS
+
+                <!-- Si ERES EL REMITENTE (tú compartes) -->
+                <a href="#" class="action-btn" id="sender-share-btn">
+                    <div class="btn-icon btn-share"><i class="fas fa-user-friends"></i></div>
+                    <div class="btn-text">Yo Quiero Compartir Esto</div>
+                    <div class="btn-desc">Genera tu enlace personalizado para que otros te respondan directamente.</div>
                 </a>
             </div>
-            
-            <div class="instructions">
-                <p><strong>Instrucción:</strong> Si te compartieron este enlace, usa los botones para responder directamente a quien te lo envió. Si tú compartirás, haz clic en "Compartir Oportunidad".</p>
+
+            <!-- Sección de Compartir Rápido -->
+            <div class="share-section" id="quick-share-section">
+                <h3>¿Quieres compartir esta página rápidamente?</h3>
+                <div class="share-buttons">
+                    <a href="#" class="share-btn share-whatsapp" id="quick-whatsapp">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <a href="#" class="share-btn share-facebook" id="quick-facebook">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </a>
+                    <a href="#" class="share-btn share-twitter" id="quick-twitter">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                    <a href="#" class="share-btn share-sms" id="quick-sms">
+                        <i class="fas fa-sms"></i> SMS
+                    </a>
+                </div>
+            </div>
+
+            <div class="guarantee">
+                <p><strong><i class="fas fa-shield-alt"></i> Garantía:</strong> Al responder "OK" o compartir, recibirás acceso inmediato a una <strong>clase gratuita exclusiva</strong> donde verás el sistema en acción. Sin costos ocultos.</p>
             </div>
         </div>
-        
-        <!-- Pie de página -->
+
         <footer>
-            <p>Sistema Moderno de Comercialización - Aiviraldownline &copy; 2023</p>
-            <p>Esta página está optimizada para una experiencia de video sin distracciones.</p>
+            <p>Sistema Moderno de Comercialización - Aiviraldownline © 2023 | Diseñado para conversión máxima.</p>
+            <p style="margin-top:10px; font-size:0.9rem;">Esta página utiliza tecnología para asegurar que recibas el mensaje completo antes de actuar.</p>
         </footer>
     </div>
 
-    <!-- Carga la API de YouTube -->
+    <!-- YouTube API -->
     <script src="https://www.youtube.com/iframe_api"></script>
-    
     <script>
-        // Variables globales
+        // ================= CONFIGURACIÓN GLOBAL =================
         let player;
-        let videoCompleted = false;
-        
-        // Elementos del DOM
-        const blockingOverlay = document.getElementById('blockingOverlay');
-        const actionSection = document.getElementById('actionSection');
-        const shareButton = document.getElementById('shareButton');
-        const whatsappButton = document.getElementById('whatsappButton');
-        const smsButton = document.getElementById('smsButton');
-        
-        // Esta función se llama cuando la API de YouTube está lista
+        let videoEnded = false;
+        const currentPageUrl = window.location.href.split('?')[0];
+
+        // ================= DETECTAR ROL DEL USUARIO =================
+        const urlParams = new URLSearchParams(window.location.search);
+        const senderPhone = urlParams.get('sender');
+        const userIsReceiver = !!senderPhone; // Si hay 'sender' en la URL, es receptor
+
+        // ================= INICIALIZAR VIDEO =================
         function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '100%',
-                width: '100%',
-                videoId: '1JIu5wPxBEI', // ID de tu video
+            player = new YT.Player('youtube-player', {
+                videoId: '1JIu5wPxBEI',
                 playerVars: {
-                    'autoplay': 1, // Comienza automáticamente
-                    'controls': 1, // Muestra controles
-                    'rel': 0, // No muestra videos relacionados al final
-                    'modestbranding': 1, // Minimiza el branding de YouTube
-                    'playsinline': 1 // Reproduce en línea en iOS
+                    'autoplay': 1,
+                    'controls': 1,
+                    'rel': 0,
+                    'modestbranding': 1,
+                    'playsinline': 1
                 },
                 events: {
                     'onReady': onPlayerReady,
@@ -340,136 +310,110 @@
                 }
             });
         }
-        
-        // Cuando el reproductor está listo
-        function onPlayerReady(event) {
-            console.log('Reproductor listo');
-            // Ocultamos el overlay después de 3 segundos (cuando el video ya está cargado)
+
+        function onPlayerReady() {
+            console.log('✅ Reproductor listo. El video comenzará automáticamente.');
             setTimeout(() => {
-                blockingOverlay.classList.add('hidden');
-            }, 3000);
+                document.getElementById('blocking-overlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('blocking-overlay').style.display = 'none';
+                }, 500);
+            }, 2000);
         }
-        
-        // Detecta cambios en el estado del video
+
         function onPlayerStateChange(event) {
-            // Estado 0 = VIDEO TERMINADO
             if (event.data === YT.PlayerState.ENDED) {
-                videoCompleted = true;
-                unlockActionSection();
+                videoEnded = true;
+                unlockActionStage();
             }
-            
-            // Estado 1 = REPRODUCIENDO (ocultar overlay si aún está visible)
-            if (event.data === YT.PlayerState.PLAYING) {
-                blockingOverlay.classList.add('hidden');
-            }
-            
-            // Estado 2 = PAUSADO
-            // Estado 3 = BUFFERING
-            // Estado 5 = VIDEO INCORPORADO
         }
-        
-        // Desbloquea la sección de acciones
-        function unlockActionSection() {
-            // Muestra la sección de acciones con animación
-            actionSection.classList.add('visible');
-            
-            // Desplaza suavemente hacia la sección de acciones
-            setTimeout(() => {
-                actionSection.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
-            }, 500);
-            
-            // Configura los botones según si el usuario es remitente o receptor
+
+        // ================= DESBLOQUEAR ACCIONES =================
+        function unlockActionStage() {
+            const actionStage = document.getElementById('action-stage');
+            actionStage.classList.add('visible');
+            actionStage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Configurar botones según el rol
             setupActionButtons();
+            setupQuickShareButtons();
         }
-        
-        // Configura los botones de acción
+
+        // ================= CONFIGURAR BOTONES PRINCIPALES =================
         function setupActionButtons() {
-            // Verificar si hay un parámetro de remitente en la URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const senderPhone = urlParams.get('sender');
-            
-            // Si hay un remitente, estamos en la vista del receptor
-            if (senderPhone) {
-                // Configurar botones de respuesta
-                const responseMessage = "OK - Vi el video completo de Aiviraldownline. Quiero más información sobre la clase gratuita.";
-                
-                whatsappButton.href = `https://wa.me/${senderPhone}?text=${encodeURIComponent(responseMessage)}`;
-                smsButton.href = `sms:${senderPhone}?body=${encodeURIComponent(responseMessage)}`;
-                
-                // Cambiar texto del botón de compartir para el receptor
-                shareButton.innerHTML = '<i class="fas fa-share-alt"></i> Compartir con Otros';
-                shareButton.onclick = function(e) {
-                    e.preventDefault();
-                    showShareOptions();
-                };
-                
-                // Actualizar instrucciones
-                document.querySelector('.instructions p').innerHTML = 
-                    '<strong>Instrucción:</strong> Usa los botones para responder directamente a la persona que te compartió esta información. También puedes compartir con otros si lo deseas.';
-                    
+            const receiverWhatsappBtn = document.getElementById('receiver-whatsapp-btn');
+            const receiverSmsBtn = document.getElementById('receiver-sms-btn');
+            const senderShareBtn = document.getElementById('sender-share-btn');
+
+            if (userIsReceiver) {
+                // USUARIO ES RECEPTOR (mostrar botones de respuesta)
+                const responseMessage = "OK ✅ - Acabo de ver el video completo de Aiviraldownline. Quiero acceder a la clase gratuita y toda la información, por favor.";
+                receiverWhatsappBtn.href = `https://wa.me/${senderPhone}?text=${encodeURIComponent(responseMessage)}`;
+                receiverSmsBtn.href = `sms:${senderPhone}?body=${encodeURIComponent(responseMessage)}`;
+                senderShareBtn.style.display = 'none'; // Ocultar opción de compartir
             } else {
-                // Estamos en la vista del remitente
-                // Configurar botón de compartir
-                shareButton.onclick = function(e) {
+                // USUARIO ES REMITENTE (mostrar opción para compartir)
+                receiverWhatsappBtn.style.display = 'none';
+                receiverSmsBtn.style.display = 'none';
+                senderShareBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    showShareOptions();
-                };
-                
-                // Ocultar botones de respuesta (no aplican para el remitente)
-                whatsappButton.style.display = 'none';
-                smsButton.style.display = 'none';
+                    window.location.href = `remitente-setup.html?return=${encodeURIComponent(currentPageUrl)}`;
+                });
             }
         }
-        
-        // Muestra opciones para compartir
-        function showShareOptions() {
-            // Aquí puedes implementar un modal o redirigir a la página con el formulario para remitentes
-            // Por ahora, simplemente redirigiremos a una nueva página donde pueda ingresar su número
-            const currentUrl = window.location.href.split('?')[0];
-            alert('Para compartir y que otros puedan responderte, necesitarás generar un enlace personalizado. Esta función se implementaría en la página completa de prospección.');
-            
-            // En una implementación completa, aquí redirigirías a:
-            // window.location.href = 'pagina-completa.html?mode=sender';
-        }
-        
-        // Si el usuario intenta saltarse el video
-        document.addEventListener('keydown', function(e) {
-            // Bloquear tecla de espacio (pausa/reproducción) si el overlay está visible
-            if (e.code === 'Space' && !blockingOverlay.classList.contains('hidden')) {
+
+        // ================= CONFIGURAR BOTONES DE COMPARTIR RÁPIDO =================
+        function setupQuickShareButtons() {
+            const shareTitle = "⚠️ Tu Negocio Está Estancado? Mira Esto";
+            const shareText = `Acabo de ver este sistema que soluciona exactamente lo que necesitamos: tráfico, clientes ideales y automatización. Míralo TÚ también. Responde "OK" después del video para tu acceso gratuito.`;
+
+            // WhatsApp
+            document.getElementById('quick-whatsapp').addEventListener('click', function(e) {
                 e.preventDefault();
-            }
-        });
-        
-        // Si el usuario intenta hacer clic fuera del video durante la reproducción
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`*${shareTitle}*%0A%0A${shareText}%0A%0A${currentPageUrl}`)}`;
+                window.open(whatsappUrl, '_blank');
+            });
+
+            // Facebook
+            document.getElementById('quick-facebook').addEventListener('click', function(e) {
+                e.preventDefault();
+                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentPageUrl)}&quote=${encodeURIComponent(shareText)}`;
+                window.open(facebookUrl, '_blank', 'width=600,height=400');
+            });
+
+            // Twitter
+            document.getElementById('quick-twitter').addEventListener('click', function(e) {
+                e.preventDefault();
+                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText.substring(0, 250))}&url=${encodeURIComponent(currentPageUrl)}`;
+                window.open(twitterUrl, '_blank', 'width=600,height=400');
+            });
+
+            // SMS
+            document.getElementById('quick-sms').addEventListener('click', function(e) {
+                e.preventDefault();
+                const smsUrl = `sms:?body=${encodeURIComponent(`${shareTitle}\n\n${shareText}\n\n${currentPageUrl}`)}`;
+                window.location.href = smsUrl;
+            });
+        }
+
+        // ================= BLOQUEAR ACCESO PREMATURO =================
         document.addEventListener('click', function(e) {
-            // Si el video no ha terminado y el usuario hace clic fuera del área del video
-            if (!videoCompleted && !e.target.closest('.video-stage')) {
+            if (!videoEnded && !e.target.closest('.video-stage-container')) {
                 e.preventDefault();
-                // Mostrar un mensaje recordatorio
-                alert('Por favor, termina de ver el video para desbloquear las opciones.');
+                alert('📺 Por favor, mira el video completo primero. La solución que necesitas se revela al final.');
+                document.getElementById('blocking-overlay').style.display = 'flex';
+                setTimeout(() => {
+                    document.getElementById('blocking-overlay').style.opacity = '1';
+                }, 10);
             }
         });
-        
-        // Inicialización cuando la página carga
+
+        // ================= INICIALIZACIÓN =================
         document.addEventListener('DOMContentLoaded', function() {
-            // Asegurarse de que la sección de acciones esté oculta inicialmente
-            actionSection.style.opacity = '0';
-            actionSection.style.pointerEvents = 'none';
-            
-            // Si el video ya estaba completado en una sesión anterior (usando localStorage)
-            const previouslyCompleted = localStorage.getItem('videoCompleted');
-            if (previouslyCompleted === 'true') {
-                videoCompleted = true;
-                unlockActionSection();
-                blockingOverlay.classList.add('hidden');
-            }
-            
-            // Guardar estado cuando el video se complete
-            if (player) {
-                // Ya manejado en onPlayerStateChange
+            // Mostrar mensaje personalizado según rol
+            if (userIsReceiver) {
+                document.querySelector('.problem-statement p').innerHTML += 
+                    ' <strong>Alguien pensó que esto podría ayudarte específicamente a ti.</strong>';
             }
         });
     </script>
