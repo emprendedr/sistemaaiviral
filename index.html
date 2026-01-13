@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aiviraldownline - Video Presentación</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        /* Contenedor principal */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        /* Encabezado */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+            max-width: 800px;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+        
+        /* Contenedor del video */
+        .video-stage {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto 50px;
+            position: relative;
+        }
+        
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* Relación 16:9 */
+            height: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            background-color: #000;
+        }
+        
+        #player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Overlay que bloquea la página durante la reproducción */
+        .blocking-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.95);
+            z-index: 9998;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            opacity: 1;
+            transition: opacity 0.8s ease;
+        }
+        
+        .blocking-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .overlay-message {
+            max-width: 600px;
+            margin-top: 30px;
+            color: #e2e8f0;
+        }
+        
+        .overlay-message h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #60a5fa;
+        }
+        
+        /* Sección de acciones (inicialmente oculta) */
+        .action-section {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            padding: 40px;
+            border-radius: 16px;
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            margin-top: 20px;
+        }
+        
+        .action-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .action-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #f8fafc;
+        }
+        
+        .action-section p {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        /* Botones de acción */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .action-btn i {
+            margin-right: 12px;
+            font-size: 1.3rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            color: white;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+        }
+        
+        .btn-sms {
+            background-color: #8b5cf6;
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+            filter: brightness(1.1);
+        }
+        
+        /* Instrucciones */
+        .instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(30, 41, 59, 0.5);
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #94a3b8;
+        }
+        
+        /* Pie de página */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(100, 116, 139, 0.2);
+            margin-top: 40px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .header p {
+                font-size: 1.1rem;
+            }
+            
+            .action-section {
+                padding: 30px 20px;
+            }
+            
+            .action-btn {
+                min-width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Encabezado -->
+        <div class="header">
+            <h1>Sistema Aiviraldownline: Lleva tu Negocio al Siguiente Nivel</h1>
+            <p>Descubre en este video el sistema de marketing con tecnología moderna diseñado para facilitarte la vida y multiplicar tus clientes.</p>
+        </div>
+        
+        <!-- Etapa del video -->
+        <div class="video-stage">
+            <div class="video-wrapper">
+                <!-- El iframe se insertará aquí por JavaScript -->
+                <div id="player"></div>
+            </div>
+        </div>
+        
+        <!-- Overlay que bloquea la página durante la reproducción -->
+        <div class="blocking-overlay" id="blockingOverlay">
+            <div class="overlay-message">
+                <h3>Por favor, mira el video completo</h3>
+                <p>Para desbloquear las opciones de compartir y recibir tu invitación gratuita, es necesario que veas la presentación completa.</p>
+                <p>El video comenzará automáticamente en unos segundos...</p>
+            </div>
+        </div>
+        
+        <!-- Sección de acciones (inicialmente oculta) -->
+        <div class="action-section" id="actionSection">
+            <h2>¡Excelente! Video Completo</h2>
+            <p>Ahora puedes compartir esta oportunidad con otros o responder "OK" para recibir tu invitación a la clase gratuita donde verás cómo implementar este sistema.</p>
+            
+            <div class="action-buttons">
+                <a href="#" class="action-btn btn-primary" id="shareButton">
+                    <i class="fas fa-share-alt"></i> Compartir Oportunidad
+                </a>
+                
+                <a href="#" class="action-btn btn-whatsapp" id="whatsappButton">
+                    <i class="fab fa-whatsapp"></i> Responder "OK" por WhatsApp
+                </a>
+                
+                <a href="#" class="action-btn btn-sms" id="smsButton">
+                    <i class="fas fa-sms"></i> Responder "OK" por SMS
+                </a>
+            </div>
+            
+            <div class="instructions">
+                <p><strong>Instrucción:</strong> Si te compartieron este enlace, usa los botones para responder directamente a quien te lo envió. Si tú compartirás, haz clic en "Compartir Oportunidad".</p>
+            </div>
+        </div>
+        
+        <!-- Pie de página -->
+        <footer>
+            <p>Sistema Moderno de Comercialización - Aiviraldownline &copy; 2023</p>
+            <p>Esta página está optimizada para una experiencia de video sin distracciones.</p>
+        </footer>
+    </div>
+
+    <!-- Carga la API de YouTube -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    
+    <script>
+        // Variables globales
+        let player;
+        let videoCompleted = false;
+        
+        // Elementos del DOM
+        const blockingOverlay = document.getElementById('blockingOverlay');
+        const actionSection = document.getElementById('actionSection');
+        const shareButton = document.getElementById('shareButton');
+        const whatsappButton = document.getElementById('whatsappButton');
+        const smsButton = document.getElementById('smsButton');
+        
+        // Esta función se llama cuando la API de YouTube está lista
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '100%',
+                width: '100%',
+                videoId: '1JIu5wPxBEI', // ID de tu video
+                playerVars: {
+                    'autoplay': 1, // Comienza automáticamente
+                    'controls': 1, // Muestra controles
+                    'rel': 0, // No muestra videos relacionados al final
+                    'modestbranding': 1, // Minimiza el branding de YouTube
+                    'playsinline': 1 // Reproduce en línea en iOS
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+        
+        // Cuando el reproductor está listo
+        function onPlayerReady(event) {
+            console.log('Reproductor listo');
+            // Ocultamos el overlay después de 3 segundos (cuando el video ya está cargado)
+            setTimeout(() => {
+                blockingOverlay.classList.add('hidden');
+            }, 3000);
+        }
+        
+        // Detecta cambios en el estado del video
+        function onPlayerStateChange(event) {
+            // Estado 0 = VIDEO TERMINADO
+            if (event.data === YT.PlayerState.ENDED) {
+                videoCompleted = true;
+                unlockActionSection();
+            }
+            
+            // Estado 1 = REPRODUCIENDO (ocultar overlay si aún está visible)
+            if (event.data === YT.PlayerState.PLAYING) {
+                blockingOverlay.classList.add('hidden');
+            }
+            
+            // Estado 2 = PAUSADO
+            // Estado 3 = BUFFERING
+            // Estado 5 = VIDEO INCORPORADO
+        }
+        
+        // Desbloquea la sección de acciones
+        function unlockActionSection() {
+            // Muestra la sección de acciones con animación
+            actionSection.classList.add('visible');
+            
+            // Desplaza suavemente hacia la sección de acciones
+            setTimeout(() => {
+                actionSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 500);
+            
+            // Configura los botones según si el usuario es remitente o receptor
+            setupActionButtons();
+        }
+        
+        // Configura los botones de acción
+        function setupActionButtons() {
+            // Verificar si hay un parámetro de remitente en la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const senderPhone = urlParams.get('sender');
+            
+            // Si hay un remitente, estamos en la vista del receptor
+            if (senderPhone) {
+                // Configurar botones de respuesta
+                const responseMessage = "OK - Vi el video completo de Aiviraldownline. Quiero más información sobre la clase gratuita.";
+                
+                whatsappButton.href = `https://wa.me/${senderPhone}?text=${encodeURIComponent(responseMessage)}`;
+                smsButton.href = `sms:${senderPhone}?body=${encodeURIComponent(responseMessage)}`;
+                
+                // Cambiar texto del botón de compartir para el receptor
+                shareButton.innerHTML = '<i class="fas fa-share-alt"></i> Compartir con Otros';
+                shareButton.onclick = function(e) {
+                    e.preventDefault();
+                    showShareOptions();
+                };
+                
+                // Actualizar instrucciones
+                document.querySelector('.instructions p').innerHTML = 
+                    '<strong>Instrucción:</strong> Usa los botones para responder directamente a la persona que te compartió esta información. También puedes compartir con otros si lo deseas.';
+                    
+            } else {
+                // Estamos en la vista del remitente
+                // Configurar botón de compartir
+                shareButton.onclick = function(e) {
+                    e.preventDefault();
+                    showShareOptions();
+                };
+                
+                // Ocultar botones de respuesta (no aplican para el remitente)
+                whatsappButton.style.display = 'none';
+                smsButton.style.display = 'none';
+            }
+        }
+        
+        // Muestra opciones para compartir
+        function showShareOptions() {
+            // Aquí puedes implementar un modal o redirigir a la página con el formulario para remitentes
+            // Por ahora, simplemente redirigiremos a una nueva página donde pueda ingresar su número
+            const currentUrl = window.location.href.split('?')[0];
+            alert('Para compartir y que otros puedan responderte, necesitarás generar un enlace personalizado. Esta función se implementaría en la página completa de prospección.');
+            
+            // En una implementación completa, aquí redirigirías a:
+            // window.location.href = 'pagina-completa.html?mode=sender';
+        }
+        
+        // Si el usuario intenta saltarse el video
+        document.addEventListener('keydown', function(e) {
+            // Bloquear tecla de espacio (pausa/reproducción) si el overlay está visible
+            if (e.code === 'Space' && !blockingOverlay.classList.contains('hidden')) {
+                e.preventDefault();
+            }
+        });
+        
+        // Si el usuario intenta hacer clic fuera del video durante la reproducción
+        document.addEventListener('click', function(e) {
+            // Si el video no ha terminado y el usuario hace clic fuera del área del video
+            if (!videoCompleted && !e.target.closest('.video-stage')) {
+                e.preventDefault();
+                // Mostrar un mensaje recordatorio
+                alert('Por favor, termina de ver el video para desbloquear las opciones.');
+            }
+        });
+        
+        // Inicialización cuando la página carga
+        document.addEventListener('DOMContentLoaded', function() {
+            // Asegurarse de que la sección de acciones esté oculta inicialmente
+            actionSection.style.opacity = '0';
+            actionSection.style.pointerEvents = 'none';
+            
+            // Si el video ya estaba completado en una sesión anterior (usando localStorage)
+            const previouslyCompleted = localStorage.getItem('videoCompleted');
+            if (previouslyCompleted === 'true') {
+                videoCompleted = true;
+                unlockActionSection();
+                blockingOverlay.classList.add('hidden');
+            }
+            
+            // Guardar estado cuando el video se complete
+            if (player) {
+                // Ya manejado en onPlayerStateChange
+            }
+        });
+    </script>
+</body>
+</html>
